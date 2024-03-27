@@ -1,93 +1,181 @@
-# 2024-group-08
+# Cyber-Physical Systems Project
+<div align="center">
+    
+  [![Status](https://img.shields.io/badge/status-active-success.svg)]() 
+  [![GitHub Pull Requests](https://img.shields.io/github/issues-pr/kylelobo/The-Documentation-Compendium.svg)](https://git.chalmers.se/courses/dit638/students/2024-group-08/-/branches)
+ 
 
+</div>
 
-
-## Getting started
-
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
-
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
-
-## Add your files
-
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
-
-```
-cd existing_repo
-git remote add origin https://git.chalmers.se/courses/dit638/students/2024-group-08.git
-git branch -M main
-git push -uf origin main
-```
-
-## Integrate with your tools
-
-- [ ] [Set up project integrations](https://git.chalmers.se/courses/dit638/students/2024-group-08/-/settings/integrations)
-
-## Collaborate with your team
-
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
-
-## Test and Deploy
-
-Use the built-in continuous integration in GitLab.
-
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
-
-***
-
-# Editing this README
-
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
-
-## Suggestions for a good README
-
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+----
 
 ## Name
-Choose a self-explaining name for your project.
-
+Self-driving car "Cyber-Physical systems"
 ## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+
+The cyber-physical system we are developing serves as a sophisticated 
+framework for the autonomous vehicle, featuring intricate integration and 
+collaboration between computational and physical components. This system 
+constitutes a novel paradigm in vehicular technology, where the 
+self-driving car's movement is orchestrated by a confluence of digital and
+physical processes.
+
+At its core, the system embodies a robust cyber-physical interface that 
+establishes communication channels between the vehicle and its surrounding
+environment. This interface encompasses sensors, actuators, and 
+communication protocols tailored to the specific needs of self-driving 
+vehicles.
+
+Through this comprehensive integration, the system enables the vehicle to 
+perceive its surroundings, make real-time decisions, and control its 
+movement autonomously. The cyber-physical architecture fosters seamless 
+coordination between the vehicle's computational and physical subsystems, 
+ensuring optimal performance and safety.
+
+The system's design prioritizes modularity and flexibility, allowing for 
+future enhancements and modifications. This adaptability enables us to 
+accommodate evolving technological advancements and maintain the system's 
+effectiveness over time.
+
 
 ## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+<img width="600" hight="400" src="https://htn-expert.com/wp-content/uploads/2023/02/Cyber-Physical-Systems-CPS-HTN-Hansa-Tek-Netics.jpg">
+
+[Online source](https://htn-expert.com/blog/cps/)
 
 ## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+Coming soon...
+
+## Prerequisties
+- Git
+- CMake 
+- C++
 
 ## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+To install and build the project in this project there will be several steps: 
+
+1. Clone the repository
+```bash
+git clone https://git.chalmers.se/courses/dit638/students/2024-group-08.git
+```
+
+2. Open the project directory
+```bash
+cd 2024-group-08
+```
+3. Create a folder called build
+```bash
+mkdir build
+```
+4. Build the project files
+```bash
+cmake ..
+```
+5. Run command make
+```bash
+make
+```
+6. Run project test
+```bash
+make test
+```
+
 
 ## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+If you follow the installation steps one by one you will have the bellow output:
+```bash
+Running tests...
+Test project /home/mali/Desktop/Cyber System/Assignments/Assignment 5/build
+    Start 1: helloworld-Runner
+1/1 Test #1: helloworld-Runner ................   Passed    0.01 sec
+
+100% tests passed, 0 tests failed out of 1
+
+Total Test time (real) =   0.01 sec
+
+```
+
+## Team Workflow
+when adding new feature, we follow these steps:
+
+1. Create a new branch for the feature using the naming convention: feature/<feature_name>.
+
+    - Where will use the feature branch concept [Link](https://git-scm.com/book/en/v2/Git-Branching-Branching-Workflows)
+2. Implement the feature on the feature branch.
+3. Regularly commit changes with descriptive commit messages.
+    
+    - The commit structue will follow this stucture [Link](https://cbea.ms/git-commit/)
+4. Once the feature is complete, submit a merge request to merge the feature branch into the main branch.
+
+    - That branch will be Git-based protecting branch [Link](https://docs.gitlab.com/ee/user/project/protected_branches.html)
+5. Assign a team member to review the merge request following our code review guidelines.
+
+    - Where we will apply the followed structure [Link](https://phauer.com/2018/code-review-guidelines/)
 
 ## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+We have the support team  will be available 24/7
+
+- Morning time 8:00-20:00:
+
+    - Yousef Abbas: yousefab@chalmers.se "@yousefab""
+    - Muhammed Ali Ehasan: elhasan@chalmers.se "@elhasan"
+- Evening time 20:00-8:00
+    
+    - Zakaria Aslan: muhmmad@chalmers.se "@muhmmad"
 
 ## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+1. Requirements Gathering & Analysis (27 March- 07 April):
+    
+    -  Define the system's functional and non-functional requirements, including real-time performance, safety, and security.
+2. System Design and Architecture (08 April- 12 April)
+
+    - Develop the overall system architecture, including the sensor network and control unit.
+    - Select the appropriate software, and communication technologies to meet the project's requirements.
+3. Control Unit Implementation (14 April- 01 May)
+
+    - Develop the control unit software, including the data processing, analytics, and control algorithms.
+    - Integrate the sensor data and implement the monitoring and control functionalities.
+4. Integration and Testing (02 May - 10 May)
+
+    - Conduct comprehensive testing to ensure the system's reliability, safety, and performance.
+5. Preparing for the final presentaion (11 May - ...)
+
+    - Write the system's conclusion.
+    - Prepare the final presentation.
 
 ## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
+We welcome contributions from the community to help enhance and improve our cyber-physical system for autonomous vehicles. To get started, please follow these steps:
 
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
+### Getting Started
+1. Fork the repository and clone it to your local machine.
+2. Set up the development environment as described in the [README.md](readme.md) file.
+3. Create a new branch for your feature or bug fix.
 
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
+### Development Guidelines
+1. Ensure your code follows the project's coding style and conventions.
+2. Write unit tests and integration tests to verify your changes.
+3. Update the relevant documentation, including the [README.md](readme.md) file.
+4. Use clear and descriptive commit messages.
+
+### Submitting Changes
+1. Push your branch to your forked repository.
+2. Create a new pull request (PR) from your forked repository to the main project repository.
+3. Provide a detailed description of your changes and reference any related issues or discussions.
+
+### Code Review and Merging
+    Your pull request will be reviewed by the project maintainers. Once approved, your changes will be merged into the main codebase.
+
+Our project uses a continuous integration (CI) pipeline to ensure the quality and stability of the codebase. The CI system will automatically run the test suite and handle the deployment of the updated system.
 
 ## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
+We would like to express our sincere appreciation to Professor Christian Berger, who has been instrumental in guiding us throughout this project. His continuous support, feedback, and the learning sessions he has provided have been invaluable in helping us achieve the project's outcomes.
+
+Project developers: 
+
+1. Muhammed Ali Elhasan
+2. Yousef Abbas
+3. Zakaria Aslan
 
 ## License
-For open source projects, say how it is licensed.
+- This project is released under the terms of the MIT License- [![License](https://img.shields.io/badge/License-MIT-BLUE.svg)](https://opensource.org/licenses/MIT)
 
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
