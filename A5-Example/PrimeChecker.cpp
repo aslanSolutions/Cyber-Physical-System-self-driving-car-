@@ -1,3 +1,4 @@
+// Comment for assignment 6 by Ali
 #include "PrimeChecker.hpp"
 
 bool PrimeChecker::isPrime(uint16_t n) {
