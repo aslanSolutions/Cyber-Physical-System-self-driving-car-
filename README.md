@@ -95,13 +95,30 @@ Total Test time (real) =   0.01 sec
 
 ```
 
+## Team Workflow
+when adding new feature, we follow these steps:
+
+1. Create a new branch for the feature using the naming convention: feature/<feature_name>.
+
+    - Where will use the feature branch concept [Link](https://git-scm.com/book/en/v2/Git-Branching-Branching-Workflows)
+2. Implement the feature on the feature branch.
+3. Regularly commit changes with descriptive commit messages.
+    
+    - The commit structue will follow this stucture [Link](https://cbea.ms/git-commit/)
+4. Once the feature is complete, submit a merge request to merge the feature branch into the main branch.
+
+    - That branch will be Git-based protecting branch [Link](https://docs.gitlab.com/ee/user/project/protected_branches.html)
+5. Assign a team member to review the merge request following our code review guidelines.
+
+    - Where we will apply the followed structure [Link](https://phauer.com/2018/code-review-guidelines/)
+
 ## Support
 We have the support team  will be available 24/7
 
 - Morning time 8:00-20:00:
 
     - Yousef Abbas: yousefab@chalmers.se "@yousefab""
-    - Muhammed Ali Ehasan: elhasan@chalmers.se "elhasan"
+    - Muhammed Ali Ehasan: elhasan@chalmers.se "@elhasan"
 - Evening time 20:00-8:00
     
     - Zakaria Aslan: muhmmad@chalmers.se "@muhmmad"
