@@ -1,3 +1,4 @@
+// Add comment to PrimeChecker.ccp for A6
 #include "PrimeChecker.hpp"
 
 bool PrimeChecker::isPrime(uint16_t n) {
