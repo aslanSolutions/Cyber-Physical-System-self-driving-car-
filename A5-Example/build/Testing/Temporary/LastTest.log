@@ -1,0 +1,21 @@
+Start testing: Mar 28 02:19 CET
+----------------------------------------------------------
+1/1 Testing: helloworld-Runner
+1/1 Test: helloworld-Runner
+Command: "/home/ubuntu/A6/2024-group-08/A5-Example/build/helloworld-Runner"
+Directory: /home/ubuntu/A6/2024-group-08/A5-Example/build
+"helloworld-Runner" start time: Mar 28 02:19 CET
+Output:
+----------------------------------------------------------
+===============================================================================
+All tests passed (5 assertions in 1 test case)
+
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"helloworld-Runner" end time: Mar 28 02:19 CET
+"helloworld-Runner" time elapsed: 00:00:00
+----------------------------------------------------------
+
+End testing: Mar 28 02:19 CET
