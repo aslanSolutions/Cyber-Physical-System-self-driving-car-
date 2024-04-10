@@ -40,7 +40,7 @@ build-and-test:
     - docker-build
   stage: build
   script: 
-    - docker build -f /2024-group-08/A5-Example/Dockerfile .
+    - docker build -f /builds/courses/dit638/students/2024-group-08/A5-Example/Dockerfile .
 
 # This section describes what shall be done to deploy artefacts from the project.
 release:
