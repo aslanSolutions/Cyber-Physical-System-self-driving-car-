@@ -18,7 +18,7 @@ WORKDIR /opt/sources
 
 RUN ls -la /opt/sources
 
-RUN cd /opt/sources && \
+RUN cd /opt/sources/A5-Example && \
     mkdir build && \
     cd build && \
     cmake -D CMAKE_BUILD_TYPE=Release .. && \
