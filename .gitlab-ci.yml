@@ -1,18 +1,3 @@
-# Copyright (C) 2023  Christian Berger
-#
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
 # Which Docker image shall be used on the GitLab runner?
 image: registry.git.chalmers.se/courses/dit638/students/docker/docker:19.03.3
 
@@ -40,7 +25,8 @@ build-and-test:
     - docker-build
   stage: build
   script: 
-    - docker build -f /builds/courses/dit638/students/2024-group-08/A5-Example/Dockerfile .
+    - docker pull $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG || true  # Pull the cached image if available, ignore errors
+    - docker build --cache-from $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG -f /builds/courses/dit638/students/2024-group-08/A5-Example/Dockerfile -t $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG .
 
 # This section describes what shall be done to deploy artefacts from the project.
 release:
@@ -56,5 +42,4 @@ release:
 
   except:
   - /^v\d+\.\d+\.\d+$/  # Exclude tags following semantic versioning (vX.Y.Z) pattern from the build stage
-
 
