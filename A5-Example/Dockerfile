@@ -1,6 +1,6 @@
 ##################################################
 # Section 1: Build the application
-FROM ubuntu:22.04 as builder
+FROM ubuntu:20.04 as builder
 MAINTAINER Group_8
 
 RUN apt-get update -y && \
@@ -22,7 +22,7 @@ RUN cd /opt/sources && \
 
 ##################################################
 # Section 2: Bundle the application.
-FROM ubuntu:22.04
+FROM ubuntu:20.04
 MAINTAINER Group_8
 
 RUN apt-get update -y && \
