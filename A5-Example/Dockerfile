@@ -3,6 +3,8 @@
 FROM registry.git.chalmers.se/courses/dit638/students/2024-group-08/ubuntu:20.04 as builder
 MAINTAINER Group_8
 
+ENV DEBIAN_FRONTEND=noninteractive
+
 RUN apt-get update -y && \
     apt-get upgrade -y && \
     apt-get dist-upgrade -y
