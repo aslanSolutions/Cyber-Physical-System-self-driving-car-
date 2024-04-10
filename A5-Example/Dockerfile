@@ -16,6 +16,8 @@ RUN apt-get install -y --no-install-recommends \
 ADD . /opt/sources
 WORKDIR /opt/sources
 
+RUN ls -la /opt/sources
+
 RUN cd /opt/sources && \
     mkdir build && \
     cd build && \
