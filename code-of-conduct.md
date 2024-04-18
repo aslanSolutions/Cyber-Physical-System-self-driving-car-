@@ -18,6 +18,7 @@ By implementing these knowledge sharing practices, we aim to create a culture of
 
 4. Our usual communication plan is going to be online through discord, as well as meeting at campus once each week. Where we will be discussing issues that might have occurred during the week and try to solve them on site. 
 
+
 5. As we have great experience from our previous courses. We will be applying those methods to help us solve conflicts as well as try to avoid them. One of the strategies we are planning to implement is raising the issue early. We have learnt from our experience that it's better for the team dynamic to eliminate the issue early, and to try to solve the conflict while it's at its early stage.
 
     We want to make a comfortable environment for everyone in the team. And by achieving a comfortable environment we believe that everyone in the team can contribute to their fullest.
