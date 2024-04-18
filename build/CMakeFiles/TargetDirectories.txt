@@ -1,0 +1,5 @@
+/home/mali/Desktop/Cyber System/Gitlab-Repo/2024-group-08/A5-Example/build/CMakeFiles/helloworld.dir
+/home/mali/Desktop/Cyber System/Gitlab-Repo/2024-group-08/A5-Example/build/CMakeFiles/helloworld-Runner.dir
+/home/mali/Desktop/Cyber System/Gitlab-Repo/2024-group-08/A5-Example/build/CMakeFiles/test.dir
+/home/mali/Desktop/Cyber System/Gitlab-Repo/2024-group-08/A5-Example/build/CMakeFiles/edit_cache.dir
+/home/mali/Desktop/Cyber System/Gitlab-Repo/2024-group-08/A5-Example/build/CMakeFiles/rebuild_cache.dir
