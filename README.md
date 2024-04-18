@@ -1,7 +1,7 @@
 # Cyber-Physical Systems Project
 <div align="center">
 
-  [![pipeline status](https://gitlab.com/user/userproject/badges/master/pipeline.svg)](https://gitlab.com/user/userproject/commits/master)  
+  [![pipeline status](https://git.chalmers.se/courses/dit638/students/2024-group-08/badges/main/pipeline.svg)]  
   [![Status](https://img.shields.io/badge/status-active-success.svg)]() 
   [![GitHub Pull Requests](https://img.shields.io/github/issues-pr/kylelobo/The-Documentation-Compendium.svg)](https://git.chalmers.se/courses/dit638/students/2024-group-08/-/branches)
  
