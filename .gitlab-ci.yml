@@ -44,8 +44,7 @@ release:
     - docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
     - docker login -u gitlab-ci-token -p ${CI_JOB_TOKEN} ${CI_REGISTRY}
   script:
-    - DOCKER_CLI_EXPERIMENTAL=enabled docker buildx create --name platformbuilder --use
-    - DOCKER_CLI_EXPERIMENTAL=enabled docker buildx inspect --bootstrap
+    - docker run --rm --privileged docker/buildx-bin:latest build --name platformbuilder --use
     - docker buildx build --push --platform "linux/amd64,linux/arm/v7" -t "$CI_REGISTRY_IMAGE":"$CI_COMMIT_TAG" .
   rules:
     - if: $CI_COMMIT_TAG =~ /^v(?P<major>0|[1-9]\d*)\.(?P<minor>0|[1-9]\d*)\.(?P<patch>0|[1-9]\d*)$/
