@@ -1,4 +1,4 @@
-image: registry.git.chalmers.se/courses/dit638/students/docker/docker:latest
+image: registry.git.chalmers.se/courses/dit638/students/docker/docker:19.03.3
 
 variables:
   DOCKER_HOST: tcp://docker:2375
@@ -8,7 +8,7 @@ variables:
   BUILDX_URL: https://github.com/docker/buildx/releases/download/v0.7.1/buildx-v0.7.1.linux-amd64
 
 services:
-  - name: registry.git.chalmers.se/courses/dit638/students/docker/docker:latest-dind
+  - name: registry.git.chalmers.se/courses/dit638/students/docker/docker:19.03.3-dind
     alias: docker
 stages:
   - build
