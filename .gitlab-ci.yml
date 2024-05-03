@@ -1,4 +1,4 @@
-image: registry.git.chalmers.se/courses/dit638/students/docker/docker:latest
+image: registry.git.chalmers.se/courses/dit638/students/docker/docker:20.04
 
 variables:
   DOCKER_HOST: tcp://docker:2375
