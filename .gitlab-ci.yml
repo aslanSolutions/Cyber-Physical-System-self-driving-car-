@@ -8,7 +8,7 @@ variables:
   BUILDX_VERSION: 0.7.1
 
 services:
-  - docker: dind
+  - docker:dind
 stages:
   - build
   - deploy
