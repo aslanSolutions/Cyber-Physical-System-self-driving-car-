@@ -7,6 +7,8 @@ variables:
   CI_REGISTRY_IMAGE: $CI_REGISTRY/$CI_PROJECT_PATH
   BUILDX_VERSION: 0.7.1
 
+services:
+  - docker: dind
 stages:
   - build
   - deploy
