@@ -18,6 +18,10 @@ stages:
 # Display information before we start the build.
 before_script:
   - docker info
+  - mkdir -p ~/.docker/cli-plugins
+  - wget "https://github.com/docker/buildx/releases/download/v0.9.1/docker-buildx-v0.9.1.linux-amd64"
+  - mv buildx-v0.9.1.linux-amd64 ~/.docker/cli-plugins/docker-buildx
+  - chmod 755 ~/.docker/cli-plugins/docker-buildx
   - docker version
   - docker buildx version || echo "Buildx not avaiable"
   - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
