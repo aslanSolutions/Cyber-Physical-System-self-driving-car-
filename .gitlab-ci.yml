@@ -6,7 +6,7 @@ variables:
   DOCKER_CLI_EXPERIMENTAL: enabled
   CI_REGISTRY_IMAGE: $CI_REGISTRY/$CI_PROJECT_PATH
   BUILDX_VERSION: 0.7.1
-  CI_BUILDX-ARCHS: linux/amd64,linux/arm64,linux/arm/v7
+  CI_BUILDX_ARCHS: "linux/amd64,linux/arm64,linux/arm/v7"
 
 services:
   - name: registry.git.chalmers.se/courses/dit638/students/docker/docker:19.03.3-dind
