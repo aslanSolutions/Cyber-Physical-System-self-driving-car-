@@ -2,8 +2,6 @@ image: registry.git.chalmers.se/courses/dit638/students/docker/docker:19.03.3
 
 variables:
   DOCKER_HOST: tcp://docker:2375
-  DOCKER_DRIVER: overlay2
-  DOCKER_TLS_CERTDIR: ""
   CI_BUILDX_ARCHS: "linux/amd64,linux/arm64,linux/arm/v7"
   BUILDX_URL: https://github.com/docker/buildx/releases/download/v0.7.1/buildx-v0.7.1.linux-amd64
 
@@ -33,15 +31,15 @@ build-and-test:
 
 # This section describes what shall be done to deploy artefacts from the project.
 release:
-  before_script:
+  script:
+    - export DOCKER_CLI_EXPERIMENTAL=enabled
     - mkdir -p ~/.docker/cli-plugins
     - wget -O ~/.docker/cli-plugins/docker-buildx $BUILDX_URL
     - chmod 755 ~/.docker/cli-plugins/docker-buildx
-    - docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
-    - DOCKER_CLI_EXPERIMENTAL=enabled docker buildx create --name platformbuilder --use
-    - DOCKER_CLI_EXPERIMENTAL=enabled docker buildx inspect --bootstrap
-    - DOCKER_CLI_EXPERIMENTAL=enabled docker buildx ls df -h
-    - docker login -u gitlab-ci-token -p ${CI_JOB_TOKEN} ${CI_REGISTRY}
+    - docker info
+    - docker version
+    - docker buildx create --name platformbuilder --use
+    - docker buildx build --push $CI_BUILDX_ARCHS -t "$CI_REGISTRY-IMAGE":"$CI_COMMIT_TAG" .
   only:
     refs:
       - tags
@@ -50,7 +48,3 @@ release:
   tags:
     - docker-build
   stage: deploy
-  script:
-    - DOCKER_CLI_EXPERIMENTAL=enabled docker buildx rm platformbuilder
-    - DOCKER_CLI_EXPERIMENTAL=enabled docker buildx build --platform $CI_BUILDX_ARCHS -t "$CI_REGISTRY_IMAGE":"$CI_COMMIT_TAG" --push .
-
