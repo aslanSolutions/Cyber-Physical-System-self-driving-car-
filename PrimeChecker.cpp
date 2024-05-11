@@ -1,4 +1,6 @@
 // Comment for assignment 6 by Ali
+// Testing the pipline
+
 #include "PrimeChecker.hpp"
 
 bool PrimeChecker::isPrime(uint16_t n) {
