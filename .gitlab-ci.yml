@@ -1,5 +1,20 @@
+# Copyright (C) 2022  Christian Berger
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 # Which Docker image shall be used on the GitLab runner?
-image: docker:19.03.3
+image: docker:latest
 
 # Details about how to connect to the Docker service to run this build.
 variables:
@@ -7,7 +22,7 @@ variables:
   DOCKER_TLS_CERTDIR: ""
 
 services:
-  - docker:19.03.3-dind
+  - docker:dind
 
 stages:
   - build
@@ -30,20 +45,6 @@ build-and-test:
 
 # This section describes what shall be done to deploy artefacts from the project.
 release:
-  before_script:
-    - mkdir -p ~/.docker/cli-plugins
-    - wget -O ~/.docker/cli-plugins/docker-buildx $BUILDX_URL
-    - chmod 755 ~/.docker/cli-plugins/docker-buildx
-    - docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
-    - DOCKER_CLI_EXPERIMENTAL=enabled docker buildx create --name platformbuilder --use
-    - DOCKER_CLI_EXPERIMENTAL=enabled docker buildx inspect --bootstrap platformbuilder
-    - DOCKER_CLI_EXPERIMENTAL=enabled docker buildx ls df -h
-    - docker login -u gitlab-ci-token -p ${CI_JOB_TOKEN} ${CI_REGISTRY}
-  only:
-    refs:
-      - tags
-    variables:
-      - $CI_COMMIT_TAG =~ /^v\d+.\d+.\d+$/
   tags:
     - docker-build
   stage: deploy
@@ -60,4 +61,3 @@ release:
   only:
     - tags
     - /^(0|[1-9]\d).(0|[1-9]\d).(0|[1-9]\d*)/
-
