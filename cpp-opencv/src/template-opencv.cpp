@@ -54,6 +54,176 @@ double processContours(const cv::Mat &result, const std::vector<std::vector<cv::
 }
 
 
+cv::Mat processImage(const cv::Mat &result, double pPosition, double vZ, double fGSR)
+{
+    cv::Mat blueMask;
+    cv::Mat yellowMask;
+
+    int height = result.rows;
+    int croppedTopHeight = height * 0.4;
+    cv::Rect roi(0, croppedTopHeight, result.cols, height - croppedTopHeight);
+    cv::Mat imgBottom60 = result(roi);
+
+    auto convertToHSV = [](const cv::Mat &input)
+    {
+        cv::Mat HueSatVal;
+        cv::cvtColor(input, HueSatVal, cv::COLOR_BGR2HSV);
+        return HueSatVal;
+    };
+
+    auto createMask = [](const cv::Mat &HueSatVal, const cv::Scalar &minRange, const cv::Scalar &maxRange)
+    {
+        cv::Mat mask;
+        cv::inRange(HueSatVal, minRange, maxRange, mask);
+        return mask;
+    };
+
+    auto applyMorphologicalOpening = [](cv::Mat &mask)
+    {
+        cv::Mat kernel = cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5));
+        cv::morphologyEx(mask, mask, cv::MORPH_OPEN, kernel);
+    };
+
+    auto applyGaussianBlur = [](cv::Mat &mask)
+    {
+        cv::GaussianBlur(mask, mask, cv::Size(3, 3), 1.0);
+    };
+
+    auto combineMasks = [](const cv::Mat &mask1, const cv::Mat &mask2)
+    {
+        cv::Mat combinedMask;
+        cv::bitwise_or(mask1, mask2, combinedMask);
+        return combinedMask;
+    };
+
+    // Apply lambda functions values
+    cv::Mat hsvImage = convertToHSV(imgBottom60);
+
+    blueMask = createMask(hsvImage, cv::Scalar(99, 118, 41), cv::Scalar(139, 255, 255));
+    applyMorphologicalOpening(blueMask);
+    applyGaussianBlur(blueMask);
+
+    yellowMask = createMask(hsvImage, cv::Scalar(19, 101, 99), cv::Scalar(29, 255, 255));
+    applyMorphologicalOpening(yellowMask);
+    applyGaussianBlur(yellowMask);
+
+    cv::Mat combinedMask = combineMasks(blueMask, yellowMask);
+    std::vector<std::vector<cv::Point>> blueContours = findContours(blueMask);
+    std::vector<std::vector<cv::Point>> yellowContours = findContours(yellowMask);
+
+    double blueAngle = 0.0;
+    double yellowAngle = 0.0;
+
+
+    cv::Scalar blueColor(255, 0, 0);
+    cv::Scalar yellowColor(0, 255, 255);
+
+    int yOffset = height * 0.4;
+
+    blueAngle = processContours(result, blueContours, blueAngle, yOffset, blueColor);
+    yellowAngle = processContours(result, yellowContours, yellowAngle, yOffset, yellowColor);
+
+    // Extract blue and yellow masks and contours
+
+    // Calculate midpoint of the screen
+    int midX = result.cols / 2;
+    int midY = result.rows / 2;
+
+    // Initialize distances from cones to midpoint
+    double distBlue = std::numeric_limits<double>::max();
+    double distYellow = std::numeric_limits<double>::max();
+
+    // Initialize flags to indicate cone presence
+    bool bluePresent = false;
+    bool yellowPresent = false;
+
+    // Initialize variables to track cone positions
+    int blueX = 0, yellowX = 0;
+
+    // Check if blue cone is visible and calculate its distance to midpoint
+    if (!blueContours.empty() && !blueContours[0].empty())
+    {
+        cv::Point bluePoint = blueContours[0][0];
+        distBlue = std::sqrt(std::pow(bluePoint.x - midX, 2) + std::pow(bluePoint.y - midY, 2));
+        blueX = bluePoint.x;
+        bluePresent = true;
+    }
+
+    // Check if yellow cone is visible and calculate its distance to midpoint
+    if (!yellowContours.empty() && !yellowContours[0].empty())
+    {
+        cv::Point yellowPoint = yellowContours[0][0];
+        distYellow = std::sqrt(std::pow(yellowPoint.x - midX, 2) + std::pow(yellowPoint.y - midY, 2));
+        yellowX = yellowPoint.x;
+        yellowPresent = true;
+    }
+
+    // Determine cone positions relative to the middle of the screen
+    if (bluePresent && yellowPresent)
+    {
+
+        if (blueX > midX && yellowX < midX) // ccw
+        {
+            if (((blueX - midX) - (midX - yellowX)) > -200 && ((blueX - midX) - (midX - yellowX)) < 200)
+            {
+                // Blue cone is on the right side, and yellow cone is on the left side
+                steeringAngle = 2.832e-6 * abs((midX - blueX) - (yellowX - midX)) * abs((midX - blueX) - (yellowX - midX));
+            }
+            else
+            {
+                steeringAngle = (std::abs(distBlue - distYellow) * 0.29) / midX;
+            }
+        }
+        else if (blueX < midX && yellowX > midX)
+        {
+            if (((midX - blueX) - (yellowX - midX)) > -200 && ((midX - blueX) - (yellowX - midX)) < 200)
+            {
+                // Blue cone is on the left side, and yellow cone is on the right side
+                steeringAngle = -2.832e-6 * abs((midX - blueX) - (yellowX - midX)) * abs((midX - blueX) - (yellowX - midX));
+            }
+            else
+            {
+                steeringAngle = (std::abs(distBlue - distYellow) * -0.29) / midX;
+            }
+        }
+    }
+
+    else if (bluePresent && !yellowPresent)
+    {
+        // Only blue cone is present
+        if (blueX < midX)
+        {
+            // Blue cone is on the left side
+            steeringAngle = -0.1;
+        }
+        else if (blueX > midX)
+        {
+            // Blue cone is on the right side
+            steeringAngle = 0.1;
+        }
+    }
+    else if (yellowPresent && !bluePresent)
+    {
+        // Only yellow cone is present
+        if (yellowX < midX)
+        {
+            // Yellow cone is on the left side
+            steeringAngle = 0.1;
+        }
+        else if (yellowX > midX)
+        {
+            // Yellow cone is on the right side
+            steeringAngle = -0.1;
+        }
+    }
+
+    return result;
+}
+
+
+
+
+
 #endif
 
 int32_t main(int32_t argc, char **argv) {
