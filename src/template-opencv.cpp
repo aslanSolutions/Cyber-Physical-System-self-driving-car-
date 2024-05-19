@@ -107,7 +107,7 @@ double calculateSteeringAngle(double blueAngle, double yellowAngle, double vZ, d
     return steeringAngle;
 }
 
-cv::Mat processImage(const cv::Mat &result, double pPosition, double vZ, double fuckersGSR)
+cv::Mat processImage(const cv::Mat &result, double pPosition, double vZ, double fGSR)
 {
     cv::Mat blueMask;
     cv::Mat yellowMask;
@@ -295,7 +295,7 @@ int32_t main(int32_t argc, char **argv)
         std::cerr << "Unable to open file for output." << std::endl;
         return -1; // Exit if file cannot be opened
     }
-    dataFile << "Time,Video_Angle,Algorithm_Angle\n";
+    dataFile << "Time,Real_angle_value,Algorithm_Angle\n";
 
     int32_t retCode{1};
     // Parse the command line parameters as we require the user to specify some mandatory information on startup.
@@ -339,7 +339,6 @@ int32_t main(int32_t argc, char **argv)
                 // https://github.com/chrberger/libcluon/blob/master/libcluon/testsuites/TestEnvelopeConverter.cpp#L31-L40
                 std::lock_guard<std::mutex> lck(gsrMutex);
                 gsr = cluon::extractMessage<opendlv::proxy::GroundSteeringRequest>(std::move(env));
-                std::cout << "lambda: groundSteering = " << gsr.groundSteering() << std::endl;
             };
 
             od4.dataTrigger(opendlv::proxy::GroundSteeringRequest::ID(), onGroundSteeringRequest);
@@ -394,7 +393,6 @@ int32_t main(int32_t argc, char **argv)
                     sampleTimePointInMicroseconds = cluon::time::toMicroseconds(sampleTimePoint);
                     // Now you have the time point in microseconds, which you can use as needed
                     // For example, logging or performing time-based calculations
-                    std::cout << "Sample Time Point (microseconds): " << sampleTimePointInMicroseconds << std::endl;
                 }
 
                 sharedMemory->unlock();
@@ -413,8 +411,8 @@ int32_t main(int32_t argc, char **argv)
                 // TODO: Do something with the frame.
                 double pPosition = pedalPosition.position();
                 double vZ = angularVelocity.angularVelocityZ();
-                double fuckersGSR = gsr.groundSteering();
-                cv::Mat processedImage = processImage(img, pPosition, vZ, fuckersGSR);
+                double fGSR = gsr.groundSteering();
+                cv::Mat processedImage = processImage(img, pPosition, vZ, fGSR);
 
                 dataFile << sampleTimePointInMicroseconds << "," << gsr.groundSteering() << "," << steeringAngle << "\n";
 
@@ -428,7 +426,7 @@ int32_t main(int32_t argc, char **argv)
                 // If you want to access the latest received ground steering, don't forget to lock the mutex:
                 {
                     std::lock_guard<std::mutex> lck(gsrMutex);
-                    std::cout << "main: groundSteering = " << gsr.groundSteering() << std::endl;
+                    std::cout << "group_08;" << sampleTimePointInMicroseconds << ";" << steeringAngle << std::endl;
                 }
                 int textPositionX = 10; // X coordinate
                 int textPositionY = img.rows - 10;
