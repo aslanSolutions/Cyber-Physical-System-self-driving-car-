@@ -78,13 +78,6 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
 # Gather all object code first to avoid double compilation.
 set(LIBRARIES Threads::Threads)
 
-if(UNIX)
-    if(NOT "${CMAKE_SYSTEM_NAME}" STREQUAL "Darwin")
-        find_package(LibRT REQUIRED)
-        set(LIBRARIES ${LIBRARIES} ${LIBRT_LIBRARIES})
-        include_directories(SYSTEM ${LIBRT_INCLUDE_DIR})
-    endif()
-endif()
 
 # This project uses OpenCV for image processing.
 find_package(OpenCV REQUIRED core highgui imgproc)
