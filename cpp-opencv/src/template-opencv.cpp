@@ -28,6 +28,7 @@
 #include <sstream>
 #include <cmath>
 
+double steeringAngle = 0;
 
 std::vector<std::vector<cv::Point>> findContours(const cv::Mat &mask)
 {
@@ -53,8 +54,60 @@ double processContours(const cv::Mat &result, const std::vector<std::vector<cv::
     return angle;
 }
 
+double calculateSteeringAngle(double blueAngle, double yellowAngle, double vZ, double pPosition)
+{
+    int cw = 0;
+    int ccw = 0;
 
-cv::Mat processImage(const cv::Mat &result, double pPosition, double vZ, double fGSR)
+    if ((yellowAngle > 0) && (blueAngle > 0))
+    {
+        (blueAngle > yellowAngle) ? cw++ : ccw++;
+    }
+
+    bool clockwise = (cw > ccw);
+
+    if (pPosition != 0)
+    {
+        if (blueAngle > 0 && yellowAngle > 0)
+        {
+            double largerAngle = std::max(blueAngle, yellowAngle);
+            double smallerAngle = std::min(blueAngle, yellowAngle);
+
+            double angleDifference = largerAngle - smallerAngle;
+
+            if (clockwise)
+            {
+                angleDifference = angleDifference;
+            }
+            else if (!clockwise)
+            {
+                angleDifference = angleDifference * -1;
+            }
+            if (angleDifference < 50 && angleDifference > -50)
+            {
+                steeringAngle += clockwise ? -0.025 : 0.025;
+            }
+            else
+            {
+                steeringAngle += clockwise ? -1 : 1;
+            }
+        }
+
+        (clockwise) ? (steeringAngle += vZ * pPosition * 0.05) : (steeringAngle += vZ * pPosition * 0.05);
+
+        if (steeringAngle > 0.29)
+        {
+            steeringAngle = 0.29;
+        }
+        else if (steeringAngle < -0.29)
+        {
+            steeringAngle = -0.29;
+        }
+    }
+    return steeringAngle;
+}
+
+cv::Mat processImage(const cv::Mat &result, double pPosition, double vZ, double fuckersGSR)
 {
     cv::Mat blueMask;
     cv::Mat yellowMask;
@@ -108,12 +161,15 @@ cv::Mat processImage(const cv::Mat &result, double pPosition, double vZ, double 
     applyGaussianBlur(yellowMask);
 
     cv::Mat combinedMask = combineMasks(blueMask, yellowMask);
+    // cv::Mat blueMask, yellowMask;
     std::vector<std::vector<cv::Point>> blueContours = findContours(blueMask);
     std::vector<std::vector<cv::Point>> yellowContours = findContours(yellowMask);
 
     double blueAngle = 0.0;
     double yellowAngle = 0.0;
 
+    // double lowestBlue = (!blueContours.empty() && !blueContours[0].empty()) ? blueContours[0][0].x : -1;
+    // double lowestYellow = (!yellowContours.empty() && !yellowContours[0].empty()) ? yellowContours[0][0].x : -1;
 
     cv::Scalar blueColor(255, 0, 0);
     cv::Scalar yellowColor(0, 255, 255);
@@ -122,6 +178,14 @@ cv::Mat processImage(const cv::Mat &result, double pPosition, double vZ, double 
 
     blueAngle = processContours(result, blueContours, blueAngle, yOffset, blueColor);
     yellowAngle = processContours(result, yellowContours, yellowAngle, yOffset, yellowColor);
+
+    // double blueAngleDegrees = blueAngle * 180 / CV_PI;
+    // double yellowAngleDegrees = yellowAngle * 180 / CV_PI;
+
+    // double blueAvgX = calculateAverageX(blueContours);
+    // double yellowAvgX = calculateAverageX(yellowContours);
+
+    // double steeringAngle = calculateSteeringAngle(blueAngleDegrees, yellowAngleDegrees, vZ, pPosition);
 
     // Extract blue and yellow masks and contours
 
@@ -166,6 +230,7 @@ cv::Mat processImage(const cv::Mat &result, double pPosition, double vZ, double 
         {
             if (((blueX - midX) - (midX - yellowX)) > -200 && ((blueX - midX) - (midX - yellowX)) < 200)
             {
+                /* code */
                 // Blue cone is on the right side, and yellow cone is on the left side
                 steeringAngle = 2.832e-6 * abs((midX - blueX) - (yellowX - midX)) * abs((midX - blueX) - (yellowX - midX));
             }
@@ -220,20 +285,26 @@ cv::Mat processImage(const cv::Mat &result, double pPosition, double vZ, double 
     return result;
 }
 
-
-
-
-
 #endif
 
-int32_t main(int32_t argc, char **argv) {
+int32_t main(int32_t argc, char **argv)
+{
+    std::ofstream dataFile("/tmp/output.txt", std::ios::trunc);
+    if (!dataFile)
+    {
+        std::cerr << "Unable to open file for output." << std::endl;
+        return -1; // Exit if file cannot be opened
+    }
+    dataFile << "Time,Video_Angle,Algorithm_Angle\n";
+
     int32_t retCode{1};
     // Parse the command line parameters as we require the user to specify some mandatory information on startup.
     auto commandlineArguments = cluon::getCommandlineArguments(argc, argv);
-    if ( (0 == commandlineArguments.count("cid")) ||
-         (0 == commandlineArguments.count("name")) ||
-         (0 == commandlineArguments.count("width")) ||
-         (0 == commandlineArguments.count("height")) ) {
+    if ((0 == commandlineArguments.count("cid")) ||
+        (0 == commandlineArguments.count("name")) ||
+        (0 == commandlineArguments.count("width")) ||
+        (0 == commandlineArguments.count("height")))
+    {
         std::cerr << argv[0] << " attaches to a shared memory area containing an ARGB image." << std::endl;
         std::cerr << "Usage:   " << argv[0] << " --cid=<OD4 session> --name=<name of shared memory area> [--verbose]" << std::endl;
         std::cerr << "         --cid:    CID of the OD4Session to send and receive messages" << std::endl;
@@ -242,7 +313,8 @@ int32_t main(int32_t argc, char **argv) {
         std::cerr << "         --height: height of the frame" << std::endl;
         std::cerr << "Example: " << argv[0] << " --cid=253 --name=img --width=640 --height=480 --verbose" << std::endl;
     }
-    else {
+    else
+    {
         // Extract the values from the command line parameters
         const std::string NAME{commandlineArguments["name"]};
         const uint32_t WIDTH{static_cast<uint32_t>(std::stoi(commandlineArguments["width"]))};
@@ -251,7 +323,8 @@ int32_t main(int32_t argc, char **argv) {
 
         // Attach to the shared memory.
         std::unique_ptr<cluon::SharedMemory> sharedMemory{new cluon::SharedMemory{NAME}};
-        if (sharedMemory && sharedMemory->valid()) {
+        if (sharedMemory && sharedMemory->valid())
+        {
             std::clog << argv[0] << ": Attached to shared memory '" << sharedMemory->name() << " (" << sharedMemory->size() << " bytes)." << std::endl;
 
             // Interface to a running OpenDaVINCI session where network messages are exchanged.
@@ -260,7 +333,8 @@ int32_t main(int32_t argc, char **argv) {
 
             opendlv::proxy::GroundSteeringRequest gsr;
             std::mutex gsrMutex;
-            auto onGroundSteeringRequest = [&gsr, &gsrMutex](cluon::data::Envelope &&env){
+            auto onGroundSteeringRequest = [&gsr, &gsrMutex](cluon::data::Envelope &&env)
+            {
                 // The envelope data structure provide further details, such as sampleTimePoint as shown in this test case:
                 // https://github.com/chrberger/libcluon/blob/master/libcluon/testsuites/TestEnvelopeConverter.cpp#L31-L40
                 std::lock_guard<std::mutex> lck(gsrMutex);
@@ -270,8 +344,32 @@ int32_t main(int32_t argc, char **argv) {
 
             od4.dataTrigger(opendlv::proxy::GroundSteeringRequest::ID(), onGroundSteeringRequest);
 
+            // Pedal Position
+            opendlv::proxy::PedalPositionRequest pedalPosition;
+            std::mutex pedalPositionMutex;
+
+            auto onPedalPosition = [&pedalPosition, &pedalPositionMutex](cluon::data::Envelope &&env)
+            {
+                std::lock_guard<std::mutex> lck(pedalPositionMutex);
+                pedalPosition = cluon::extractMessage<opendlv::proxy::PedalPositionRequest>(std::move(env));
+            };
+
+            od4.dataTrigger(opendlv::proxy::PedalPositionRequest::ID(), onPedalPosition);
+
+            // Angular Velocity
+            opendlv::proxy::AngularVelocityReading angularVelocity;
+            std::mutex angularVelocityMutex;
+
+            auto onAngularVelocityRequest = [&angularVelocity, &angularVelocityMutex](cluon::data::Envelope &&env)
+            {
+                std::lock_guard<std::mutex> lck(angularVelocityMutex);
+                angularVelocity = cluon::extractMessage<opendlv::proxy::AngularVelocityReading>(std::move(env));
+            };
+
+            od4.dataTrigger(opendlv::proxy::AngularVelocityReading::ID(), onAngularVelocityRequest);
             // Endless loop; end the program by pressing Ctrl-C.
-            while (od4.isRunning()) {
+            while (od4.isRunning())
+            {
                 // OpenCV data structure to hold an image.
                 cv::Mat img;
 
@@ -285,28 +383,69 @@ int32_t main(int32_t argc, char **argv) {
                     cv::Mat wrapped(HEIGHT, WIDTH, CV_8UC4, sharedMemory->data());
                     img = wrapped.clone();
                 }
+
                 // TODO: Here, you can add some code to check the sampleTimePoint when the current frame was captured.
+                int64_t sampleTimePointInMicroseconds = 0;
+                auto timeStampResult = sharedMemory->getTimeStamp();
+                if (timeStampResult.first)
+                { // Check if getTimeStamp was successful
+                    cluon::data::TimeStamp sampleTimePoint = timeStampResult.second;
+                    // Convert TimeStamp to microseconds
+                    sampleTimePointInMicroseconds = cluon::time::toMicroseconds(sampleTimePoint);
+                    // Now you have the time point in microseconds, which you can use as needed
+                    // For example, logging or performing time-based calculations
+                    std::cout << "Sample Time Point (microseconds): " << sampleTimePointInMicroseconds << std::endl;
+                }
+
                 sharedMemory->unlock();
 
+                // Get current time
+                auto now = std::chrono::system_clock::now();
+                auto in_time_t = std::chrono::system_clock::to_time_t(now);
+
+                // Convert time to string form
+                std::stringstream ss;
+                ss << std::put_time(std::localtime(&in_time_t), "%Y-%m-%d %X"); // Format: YYYY-MM-DD HH:MM:SS
+                std::string dateAndTime = ss.str();
+
+                std::string GroupName = "Group 8";
+                std::string textToOverlay = "Current Time " + dateAndTime + "; " + "ts: " + std::to_string(sampleTimePointInMicroseconds) + "; " + GroupName;
                 // TODO: Do something with the frame.
+                double pPosition = pedalPosition.position();
+                double vZ = angularVelocity.angularVelocityZ();
+                double fuckersGSR = gsr.groundSteering();
+                cv::Mat processedImage = processImage(img, pPosition, vZ, fuckersGSR);
+
+                dataFile << sampleTimePointInMicroseconds << "," << gsr.groundSteering() << "," << steeringAngle << "\n";
+
+                // Display image
+                // cv::imshow("/img", processedImage);
+                cv::waitKey(1);
+
                 // Example: Draw a red rectangle and display image.
-                cv::rectangle(img, cv::Point(50, 50), cv::Point(100, 100), cv::Scalar(0,0,255));
+                // cv::rectangle(img, cv::Point(50, 50), cv::Point(100, 100), cv::Scalar(0, 0, 255));
 
                 // If you want to access the latest received ground steering, don't forget to lock the mutex:
                 {
                     std::lock_guard<std::mutex> lck(gsrMutex);
                     std::cout << "main: groundSteering = " << gsr.groundSteering() << std::endl;
                 }
+                int textPositionX = 10; // X coordinate
+                int textPositionY = img.rows - 10;
+                cv::putText(img, textToOverlay, cv::Point(textPositionX, textPositionY),
+                            cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(255, 255, 255), 1, cv::LINE_AA);
 
                 // Display image on your screen.
-                if (VERBOSE) {
+                if (VERBOSE)
+                {
                     cv::imshow(sharedMemory->name().c_str(), img);
                     cv::waitKey(1);
                 }
             }
         }
+        std::cout << "Closing the file now." << std::endl;
+        dataFile.close();
         retCode = 0;
     }
     return retCode;
 }
-
