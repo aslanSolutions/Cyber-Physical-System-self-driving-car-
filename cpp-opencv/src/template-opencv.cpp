@@ -15,14 +15,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-// Include the single-file, header-only middleware libcluon to create high-performance microservices
-#include "cluon-complete.hpp"
-// Include the OpenDLV Standard Message Set that contains messages that are usually exchanged for automotive or robotic applications 
-#include "opendlv-standard-message-set.hpp"
+#ifndef PROCESS_IMAGE_HPP
+#define PROCESS_IMAGE_HPP
 
-// Include the GUI and image processing header files from OpenCV
+#include "cluon-complete.hpp"
+#include "opendlv-standard-message-set.hpp"
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/core.hpp>
+#include <chrono>
+#include <iomanip>
+#include <sstream>
+#include <cmath>
 
 
 std::vector<std::vector<cv::Point>> findContours(const cv::Mat &mask)
@@ -50,6 +54,7 @@ double processContours(const cv::Mat &result, const std::vector<std::vector<cv::
 }
 
 
+#endif
 
 int32_t main(int32_t argc, char **argv) {
     int32_t retCode{1};
