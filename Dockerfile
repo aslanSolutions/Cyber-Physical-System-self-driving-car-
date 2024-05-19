@@ -4,12 +4,17 @@ LABEL MAINTAINER Group_08
 
 ENV DEBIAN_FRONTEND noninteractive
 
+# Install gnupg and add the necessary GPG keys
+RUN apt-get update -y && \
+    apt-get install -y --no-install-recommends gnupg && \
+    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 871920D1991BC93C
+
 RUN apt-get update -y && \
     apt-get upgrade -y && \
     apt-get dist-upgrade -y
 
 RUN apt-get install -y --no-install-recommends \
-    ca-certificates \   
+    ca-certificates \
     cmake \
     build-essential \
     libopencv-dev
@@ -29,6 +34,11 @@ LABEL MAINTAINER Group_08
 
 ENV DEBIAN_FRONTEND noninteractive
 
+# Install gnupg and add the necessary GPG keys
+RUN apt-get update -y && \
+    apt-get install -y --no-install-recommends gnupg && \
+    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 871920D1991BC93C
+
 RUN apt-get update -y && \
     apt-get upgrade -y && \
     apt-get dist-upgrade -y
@@ -41,3 +51,4 @@ RUN apt-get install -y --no-install-recommends \
 WORKDIR /usr/bin
 COPY --from=builder /tmp/bin/template-opencv .
 ENTRYPOINT ["/usr/bin/template-opencv"]
+
