@@ -24,6 +24,33 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 
+
+std::vector<std::vector<cv::Point>> findContours(const cv::Mat &mask)
+{
+    std::vector<std::vector<cv::Point>> contours;
+    cv::findContours(mask, contours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
+    return contours;
+}
+
+double processContours(const cv::Mat &result, const std::vector<std::vector<cv::Point>> &contours, double &angle, int yOffset, const cv::Scalar &color)
+{
+    for (const auto &contour : contours)
+    {
+        cv::Rect rectangleBorder = cv::boundingRect(contour);
+        if (rectangleBorder.area() > 100)
+        { // Ensuring that small noises are disregarded
+            rectangleBorder.y += yOffset;
+            cv::rectangle(result, rectangleBorder, color, 3); // Use the passed color
+            int midpointX = rectangleBorder.x + rectangleBorder.width / 2;
+            int midpointY = rectangleBorder.y + rectangleBorder.height / 2;
+            angle = atan2(midpointY, midpointX);
+        }
+    }
+    return angle;
+}
+
+
+
 int32_t main(int32_t argc, char **argv) {
     int32_t retCode{1};
     // Parse the command line parameters as we require the user to specify some mandatory information on startup.
